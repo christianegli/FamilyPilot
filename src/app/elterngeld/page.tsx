@@ -6,6 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
+import GdprConsent from '@/components/GdprConsent'
+import PrivacyPolicy from '@/components/PrivacyPolicy'
+import { useConsent } from '@/lib/gdpr/use-consent'
 import { 
   elterngeldApplicationSchema, 
   type ElterngeldApplicationFormData,
@@ -15,11 +18,21 @@ import {
   ELTERNGELD_INCOME_LIMITS
 } from '@/lib/validations'
 
-type Step = 'parent' | 'child' | 'employment' | 'elterngeld' | 'review'
+type Step = 'consent' | 'parent' | 'child' | 'employment' | 'elterngeld' | 'review'
 
 export default function ElterngeldPage() {
-  const [currentStep, setCurrentStep] = useState<Step>('parent')
+  const [currentStep, setCurrentStep] = useState<Step>('consent')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false)
+
+  // GDPR Consent Management
+  const {
+    consents,
+    isLoading: consentLoading,
+    error: consentError,
+    grantConsents,
+    checkRequiredConsents
+  } = useConsent({ applicationContext: 'elterngeld' })
 
   const form = useForm<ElterngeldApplicationFormData>({
     resolver: zodResolver(elterngeldApplicationSchema),
@@ -46,6 +59,7 @@ export default function ElterngeldPage() {
   const watchedValues = watch()
 
   const steps: { key: Step; title: string; description: string }[] = [
+    { key: 'consent', title: 'Datenschutz', description: 'Einwilligungen zur Datenverarbeitung' },
     { key: 'parent', title: 'Ihre Daten', description: 'Persönliche Angaben des Antragstellers' },
     { key: 'child', title: 'Kind', description: 'Angaben zum Kind' },
     { key: 'employment', title: 'Berufstätigkeit', description: 'Arbeitssituation und Einkommen' },
@@ -57,10 +71,23 @@ export default function ElterngeldPage() {
   const isLastStep = currentStepIndex === steps.length - 1
 
   const nextStep = async () => {
-    const fieldsToValidate = getFieldsForStep(currentStep)
-    const isValid = await trigger(fieldsToValidate)
+    // Special handling for consent step
+    if (currentStep === 'consent') {
+      const hasRequiredConsents = await checkRequiredConsents()
+      if (!hasRequiredConsents) {
+        alert('Bitte stimmen Sie allen erforderlichen Einwilligungen zu, um fortzufahren.')
+        return
+      }
+    } else {
+      // Regular form validation for other steps
+      const fieldsToValidate = getFieldsForStep(currentStep)
+      const isValid = await trigger(fieldsToValidate)
+      if (!isValid) {
+        return
+      }
+    }
     
-    if (isValid && !isLastStep) {
+    if (!isLastStep) {
       const nextStepIndex = currentStepIndex + 1
       setCurrentStep(steps[nextStepIndex].key)
     }
@@ -75,6 +102,8 @@ export default function ElterngeldPage() {
 
   const getFieldsForStep = (step: Step): (keyof ElterngeldApplicationFormData)[] => {
     switch (step) {
+      case 'consent':
+        return [] // No form fields to validate for consent
       case 'parent':
         return ['parent']
       case 'child':
@@ -88,11 +117,28 @@ export default function ElterngeldPage() {
     }
   }
 
+  const handleConsentChange = async (newConsents: Record<string, boolean>) => {
+    try {
+      await grantConsents(newConsents)
+    } catch (error) {
+      console.error('Error saving consents:', error)
+    }
+  }
+
   const onSubmit = async (data: ElterngeldApplicationFormData) => {
     setIsSubmitting(true)
     try {
-      // TODO: Submit to API
+      // Check final consent validation before submission
+      const hasRequiredConsents = await checkRequiredConsents()
+      if (!hasRequiredConsents) {
+        alert('Alle erforderlichen Einwilligungen müssen erteilt werden, bevor Sie den Antrag einreichen können.')
+        setIsSubmitting(false)
+        return
+      }
+
+      // TODO: Submit to API with consent validation
       console.log('Elterngeld application data:', data)
+      console.log('User consents:', consents)
       alert('Elterngeld-Antrag erfolgreich eingereicht! (Demo)')
     } catch (error) {
       console.error('Error submitting application:', error)
@@ -157,7 +203,47 @@ export default function ElterngeldPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-lg p-8">
-          {/* Step 1: Parent Information */}
+          {/* Step 1: Consent */}
+          {currentStep === 'consent' && (
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold mb-4">Datenschutz und Einwilligungen</h2>
+              
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h3 className="text-lg font-medium text-green-900 mb-2">
+                  Wichtige Information zur Datenverarbeitung
+                </h3>
+                <p className="text-sm text-green-800">
+                  Für die Bearbeitung Ihres Elterngeld-Antrags benötigen wir Ihre Einwilligung 
+                  zur Verarbeitung Ihrer personenbezogenen Daten. Alle Daten werden ausschließlich 
+                  für die Antragstellung und -bearbeitung verwendet und gemäß der DSGVO verarbeitet.
+                </p>
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowPrivacyPolicy(true)}
+                    className="text-sm text-green-600 hover:text-green-800 underline"
+                  >
+                    📋 Vollständige Datenschutzerklärung lesen
+                  </button>
+                </div>
+              </div>
+
+              <GdprConsent
+                onConsentChange={handleConsentChange}
+                applicationContext="elterngeld"
+              />
+
+              {consentError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded">
+                  <p className="text-sm text-red-800">
+                    ⚠️ Fehler beim Speichern der Einwilligungen: {consentError}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 2: Parent Information */}
           {currentStep === 'parent' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">Ihre persönlichen Daten</h2>
@@ -291,7 +377,7 @@ export default function ElterngeldPage() {
             </div>
           )}
 
-          {/* Step 2: Child Information */}
+          {/* Step 3: Child Information */}
           {currentStep === 'child' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">Angaben zum Kind</h2>
@@ -352,7 +438,7 @@ export default function ElterngeldPage() {
             </div>
           )}
 
-          {/* Step 3: Employment Information */}
+          {/* Step 4: Employment Information */}
           {currentStep === 'employment' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">Berufstätigkeit</h2>
@@ -442,7 +528,7 @@ export default function ElterngeldPage() {
             </div>
           )}
 
-          {/* Step 4: Elterngeld Configuration */}
+          {/* Step 5: Elterngeld Configuration */}
           {currentStep === 'elterngeld' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">Elterngeld-Konfiguration</h2>
@@ -576,7 +662,7 @@ export default function ElterngeldPage() {
             </div>
           )}
 
-          {/* Step 5: Review */}
+          {/* Step 6: Review */}
           {currentStep === 'review' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">Überprüfung Ihrer Angaben</h2>
@@ -673,6 +759,37 @@ export default function ElterngeldPage() {
           </div>
         </form>
 
+        {/* Footer with Privacy Policy and Transparency Links */}
+        <div className="mt-8 text-center border-t border-gray-200 pt-6">
+          <div className="flex justify-center items-center space-x-6 text-sm text-gray-600">
+            <button
+              onClick={() => setShowPrivacyPolicy(true)}
+              className="hover:text-green-600 transition-colors flex items-center"
+            >
+              🔒 Datenschutzerklärung
+            </button>
+            <span className="text-gray-300">|</span>
+            <a 
+              href="mailto:privacy@familienpilot-hamburg.de"
+              className="hover:text-green-600 transition-colors flex items-center"
+            >
+              📧 Datenschutzbeauftragte
+            </a>
+            <span className="text-gray-300">|</span>
+            <a 
+              href="https://datenschutz.hamburg.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-600 transition-colors flex items-center"
+            >
+              🏛️ Aufsichtsbehörde
+            </a>
+          </div>
+          <div className="mt-2 text-xs text-gray-500">
+            Ihre Daten werden gemäß DSGVO verarbeitet und ausschließlich in der EU gespeichert
+          </div>
+        </div>
+
         {/* Information Box */}
         <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
           <h3 className="font-semibold text-green-900 mb-2">Wichtige Hinweise zum Elterngeld Hamburg:</h3>
@@ -686,6 +803,14 @@ export default function ElterngeldPage() {
           </ul>
         </div>
       </div>
+
+      {/* Privacy Policy Modal */}
+      {showPrivacyPolicy && (
+        <PrivacyPolicy 
+          isModal={true}
+          onClose={() => setShowPrivacyPolicy(false)}
+        />
+      )}
     </div>
   )
 } 

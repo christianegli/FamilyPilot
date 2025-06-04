@@ -1,7 +1,13 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import PrivacyPolicy from '@/components/PrivacyPolicy'
 
 export default function HomePage() {
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false)
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
@@ -21,6 +27,12 @@ export default function HomePage() {
               <Link href="/elterngeld" className="text-gray-600 hover:text-green-600">
                 Elterngeld
               </Link>
+              <button
+                onClick={() => setShowPrivacyPolicy(true)}
+                className="text-gray-600 hover:text-blue-600 text-sm flex items-center"
+              >
+                🔒 Datenschutz
+              </button>
             </nav>
           </div>
         </div>
@@ -216,12 +228,56 @@ export default function HomePage() {
               </div>
               <span className="text-gray-700 font-semibold">FamilienPilot Hamburg</span>
             </div>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 text-sm mb-4">
               Entwickelt für Hamburg Eltern. Vereinfacht Kita-Gutschein und Elterngeld Anträge.
             </p>
+            
+            {/* GDPR Footer Links */}
+            <div className="flex justify-center items-center space-x-6 text-sm text-gray-500 mb-4">
+              <button
+                onClick={() => setShowPrivacyPolicy(true)}
+                className="hover:text-blue-600 transition-colors flex items-center"
+              >
+                🔒 Datenschutzerklärung
+              </button>
+              <span className="text-gray-300">|</span>
+              <a 
+                href="mailto:privacy@familienpilot-hamburg.de"
+                className="hover:text-blue-600 transition-colors flex items-center"
+              >
+                📧 Datenschutzbeauftragte
+              </a>
+              <span className="text-gray-300">|</span>
+              <a 
+                href="https://datenschutz.hamburg.de"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 transition-colors flex items-center"
+              >
+                🏛️ Aufsichtsbehörde
+              </a>
+            </div>
+            
+            {/* GDPR Compliance Statement */}
+            <div className="text-xs text-gray-400 max-w-2xl mx-auto">
+              <p className="mb-2">
+                🔐 <strong>DSGVO-konform:</strong> Alle Daten werden ausschließlich in der EU (Frankfurt) gespeichert und gemäß der Datenschutz-Grundverordnung verarbeitet.
+              </p>
+              <p>
+                📋 <strong>Transparenz:</strong> Keine Datenverarbeitung ohne Ihre ausdrückliche Einwilligung. Ihre Rechte bleiben vollständig gewahrt.
+              </p>
+            </div>
           </div>
         </div>
       </footer>
+
+      {/* Privacy Policy Modal */}
+      {showPrivacyPolicy && (
+        <PrivacyPolicy 
+          isModal={true}
+          onClose={() => setShowPrivacyPolicy(false)}
+        />
+      )}
     </div>
   )
 } 
