@@ -1,0 +1,43 @@
+{
+  "name": "familienpilot-hamburg-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Digital platform to streamline Kita-Gutschein and Elterngeld applications for Hamburg parents",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianegli/FamilyPilot.git"
+  },
+  "scripts": {
+    "dev": "cd familienpilot && npm run dev",
+    "build": "cd familienpilot && npm run build",
+    "start": "cd familienpilot && npm run start",
+    "lint": "cd familienpilot && npm run lint",
+    "install-deps": "cd familienpilot && npm install",
+    "supabase:start": "cd familienpilot && supabase start",
+    "supabase:stop": "cd familienpilot && supabase stop",
+    "supabase:status": "cd familienpilot && supabase status",
+    "types:generate": "cd familienpilot && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/supabase.ts",
+    "gdpr:audit": "echo 'Running GDPR compliance audit...' && node scripts/gdpr-audit.js",
+    "security:scan": "echo 'Running security scan...' && npm audit",
+    "compliance:check": "npm run gdpr:audit && npm run security:scan"
+  },
+  "workspaces": [
+    "familienpilot"
+  ],
+  "devDependencies": {
+    "supabase": "^1.203.9"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "hamburg",
+    "kita-gutschein", 
+    "elterngeld",
+    "family-services",
+    "gdpr-compliant",
+    "nextjs",
+    "supabase"
+  ]
+} 
