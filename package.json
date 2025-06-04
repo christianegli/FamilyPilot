@@ -12,6 +12,9 @@
     "build": "cd familienpilot && npm run build",
     "start": "cd familienpilot && npm run start",
     "lint": "cd familienpilot && npm run lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "install-deps": "cd familienpilot && npm install",
     "supabase:start": "cd familienpilot && supabase start",
     "supabase:stop": "cd familienpilot && supabase stop",
@@ -25,7 +28,10 @@
     "familienpilot"
   ],
   "devDependencies": {
-    "supabase": "^1.203.9"
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "supabase": "^1.203.9",
+    "ts-jest": "^29.3.4"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -33,11 +39,16 @@
   },
   "keywords": [
     "hamburg",
-    "kita-gutschein", 
+    "kita-gutschein",
     "elterngeld",
     "family-services",
     "gdpr-compliant",
     "nextjs",
     "supabase"
-  ]
-} 
+  ],
+  "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.15.29",
+    "js-yaml": "^4.1.0"
+  }
+}

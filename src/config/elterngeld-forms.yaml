@@ -1,0 +1,569 @@
+# Hamburg Elterngeld Forms Configuration
+# Last Updated: December 16, 2024
+# Source: Official Hamburg.de Elterngeld Services
+
+forms:
+  elterngeld_hauptantrag:
+    name: "Elterngeld Hauptantrag"
+    description: "Main application for parental allowance (Elterngeld/ElterngeldPlus)"
+    filename: "elterngeld_antrag_2025.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "elterngeld_application"
+    processing_authority: "Bezirksamt - Elterngeldstelle"
+    
+    # Income thresholds (updated for 2025)
+    income_limits:
+      children_born_after_april_2025: 175000
+      children_born_after_april_2024: 200000
+      default: 200000
+      
+    # Benefit amounts
+    benefit_amounts:
+      minimum: 300
+      maximum: 1800
+      calculation_base: "65% of net income"
+      maximum_working_hours: 32
+      
+    fields:
+      # Child Information Section
+      child_first_name:
+        coordinates: { x: 120, y: 720 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "elterngeld_application.vorname"
+        encryption_required: true
+        
+      child_last_name:
+        coordinates: { x: 320, y: 720 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "elterngeld_application.nachname"
+        encryption_required: true
+        
+      child_birth_date:
+        coordinates: { x: 120, y: 690 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "elterngeld_application.geburtsdatum"
+        encryption_required: true
+        
+      child_birth_place:
+        coordinates: { x: 250, y: 690 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "elterngeld_application.geburtsort"
+        encryption_required: true
+        
+      # Parent Information Section
+      parent_first_name:
+        coordinates: { x: 120, y: 620 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "elterngeld_application.first_name"
+        encryption_required: true
+        
+      parent_last_name:
+        coordinates: { x: 320, y: 620 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "elterngeld_application.last_name"
+        encryption_required: true
+        
+      parent_birth_date:
+        coordinates: { x: 120, y: 590 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "elterngeld_application.geburtsdatum"
+        encryption_required: true
+        
+      parent_nationality:
+        coordinates: { x: 250, y: 590 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "elterngeld_application.staatsangehoerigkeit"
+        encryption_required: false
+        
+      # Address Information
+      street:
+        coordinates: { x: 120, y: 520 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "elterngeld_application.strasse"
+        encryption_required: true
+        
+      house_number:
+        coordinates: { x: 340, y: 520 }
+        width: 60
+        height: 20
+        required: true
+        data_source: "elterngeld_application.hausnummer"
+        encryption_required: true
+        
+      postal_code:
+        coordinates: { x: 120, y: 490 }
+        width: 80
+        height: 20
+        required: true
+        data_source: "elterngeld_application.plz"
+        encryption_required: false
+        validation: "^[0-9]{5}$"
+        
+      city:
+        coordinates: { x: 220, y: 490 }
+        width: 120
+        height: 20
+        required: true
+        data_source: "elterngeld_application.ort"
+        default: "Hamburg"
+        encryption_required: false
+        
+      # Contact Information
+      email:
+        coordinates: { x: 120, y: 420 }
+        width: 250
+        height: 20
+        required: true
+        data_source: "elterngeld_application.email"
+        encryption_required: true
+        validation: "email"
+        
+      phone:
+        coordinates: { x: 120, y: 390 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "elterngeld_application.telefon"
+        encryption_required: true
+        
+      # Elterngeld Type Selection
+      elterngeld_type:
+        coordinates: { x: 150, y: 320 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "elterngeld_application.elterngeld_typ"
+        field_type: "radio"
+        options:
+          - "Basis-Elterngeld (BEG)"
+          - "ElterngeldPlus (EGP)"
+          - "Partnerschaftsbonus (PBM)"
+          
+      benefit_duration_months:
+        coordinates: { x: 380, y: 320 }
+        width: 40
+        height: 20
+        required: true
+        data_source: "elterngeld_application.bezugsdauer_monate"
+        validation: "^[1-9][0-9]?$"
+        
+      # Employment Information (Pre-Birth)
+      pre_birth_employer:
+        coordinates: { x: 120, y: 280 }
+        width: 250
+        height: 20
+        required: false
+        data_source: "elterngeld_application.arbeitgeber"
+        encryption_required: true
+        
+      pre_birth_employment_type:
+        coordinates: { x: 120, y: 250 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "elterngeld_application.beschaeftigung_typ"
+        options:
+          - "Vollzeit"
+          - "Teilzeit"
+          - "Geringfügig"
+          - "Selbstständig"
+          - "Arbeitslos"
+          - "Studium"
+          - "Ausbildung"
+          
+      annual_income_before_birth:
+        coordinates: { x: 120, y: 220 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "elterngeld_application.jahreseinkommen_vor_geburt"
+        encryption_required: true
+        format: "currency"
+        
+      monthly_net_income:
+        coordinates: { x: 250, y: 220 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "elterngeld_application.netto_monat_einkommen"
+        encryption_required: true
+        format: "currency"
+        
+      # Employment During Elternzeit
+      work_reduction_planned:
+        coordinates: { x: 50, y: 180 }
+        width: 15
+        height: 15
+        required: true
+        field_type: "checkbox"
+        data_source: "elterngeld_application.arbeitszeit_reduzierung"
+        
+      new_weekly_hours:
+        coordinates: { x: 120, y: 180 }
+        width: 40
+        height: 20
+        required: false
+        data_source: "elterngeld_application.neue_wochenstunden"
+        condition: "work_reduction_planned == true"
+        
+      income_during_elternzeit:
+        coordinates: { x: 200, y: 180 }
+        width: 100
+        height: 20
+        required: false
+        data_source: "elterngeld_application.einkommen_waehrend_elternzeit"
+        encryption_required: true
+        format: "currency"
+        
+      # Partner Information
+      partner_receives_elterngeld:
+        coordinates: { x: 50, y: 140 }
+        width: 15
+        height: 15
+        required: true
+        field_type: "checkbox"
+        data_source: "elterngeld_application.partner_bezieht_elterngeld"
+        
+      partner_name:
+        coordinates: { x: 120, y: 140 }
+        width: 200
+        height: 20
+        required: false
+        data_source: "elterngeld_application.partner_name"
+        encryption_required: true
+        condition: "partner_receives_elterngeld == true"
+        
+      partner_birth_date:
+        coordinates: { x: 340, y: 140 }
+        width: 100
+        height: 20
+        required: false
+        format: "DD.MM.YYYY"
+        data_source: "elterngeld_application.partner_geburtsdatum"
+        encryption_required: true
+        condition: "partner_receives_elterngeld == true"
+        
+      # Administrative Information
+      application_date:
+        coordinates: { x: 120, y: 100 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "elterngeld_application.antragsdatum"
+        default: "today"
+        
+      responsible_bezirksamt:
+        coordinates: { x: 250, y: 100 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "elterngeld_application.bezirksamt"
+        auto_assign: "postal_code"
+        
+      # Special Circumstances
+      special_circumstances:
+        coordinates: { x: 120, y: 50 }
+        width: 400
+        height: 40
+        required: false
+        field_type: "textarea"
+        data_source: "elterngeld_application.besondere_umstaende"
+        encryption_required: true
+
+  elterngeld_einkommenserklaerung:
+    name: "Einkommenserklärung Elterngeld"
+    description: "Income declaration for Elterngeld calculation"
+    filename: "elterngeld_einkommenserklaerung.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "income_declaration"
+    processing_authority: "Bezirksamt - Elterngeldstelle"
+    
+    fields:
+      # Employment Details (Last 12 Months)
+      employer_12m:
+        coordinates: { x: 120, y: 650 }
+        width: 250
+        height: 20
+        required: true
+        data_source: "income.arbeitgeber"
+        encryption_required: true
+        
+      employment_start_date:
+        coordinates: { x: 120, y: 620 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "income.start_datum"
+        
+      employment_end_date:
+        coordinates: { x: 250, y: 620 }
+        width: 100
+        height: 20
+        required: false
+        format: "DD.MM.YYYY"
+        data_source: "income.end_datum"
+        
+      # Monthly Income Details
+      monthly_gross_income:
+        coordinates: { x: 120, y: 580 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "income.brutto_monat_einkommen"
+        encryption_required: true
+        format: "currency"
+        
+      monthly_net_income:
+        coordinates: { x: 250, y: 580 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "income.netto_monat_einkommen"
+        encryption_required: true
+        format: "currency"
+        
+      # Tax and Social Security
+      tax_class:
+        coordinates: { x: 120, y: 540 }
+        width: 40
+        height: 20
+        required: true
+        data_source: "income.steuerklasse"
+        options: ["I", "II", "III", "IV", "V", "VI"]
+        
+      social_security_contributions:
+        coordinates: { x: 200, y: 540 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "income.sozialversicherung"
+        encryption_required: true
+        format: "currency"
+        
+      # Additional Income Sources
+      additional_income:
+        coordinates: { x: 120, y: 500 }
+        width: 100
+        height: 20
+        required: false
+        data_source: "income.zusatzeinkommen"
+        encryption_required: true
+        format: "currency"
+        
+      additional_income_description:
+        coordinates: { x: 250, y: 500 }
+        width: 200
+        height: 20
+        required: false
+        data_source: "income.zusatzeinkommen_beschreibung"
+
+  selbststaendige_erklaerung:
+    name: "Erklärung für Selbstständige"
+    description: "Declaration for self-employed applicants"
+    filename: "elterngeld_selbststaendige.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "self_employed_declaration"
+    processing_authority: "Bezirksamt - Elterngeldstelle"
+    
+    fields:
+      business_name:
+        coordinates: { x: 120, y: 650 }
+        width: 250
+        height: 20
+        required: true
+        data_source: "self_employed.unternehmensname"
+        encryption_required: true
+        
+      business_start_date:
+        coordinates: { x: 120, y: 620 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "self_employed.gruendungsdatum"
+        
+      business_type:
+        coordinates: { x: 250, y: 620 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "self_employed.unternehmensart"
+        
+      annual_revenue:
+        coordinates: { x: 120, y: 580 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "self_employed.jahresumsatz"
+        encryption_required: true
+        format: "currency"
+        
+      annual_profit:
+        coordinates: { x: 250, y: 580 }
+        width: 100
+        height: 20
+        required: true
+        data_source: "self_employed.jahresgewinn"
+        encryption_required: true
+        format: "currency"
+
+# Hamburg District Office Assignment for Elterngeld
+elterngeld_offices:
+  altona:
+    name: "Elterngeldstelle Altona"
+    postal_codes: 
+      - "22041" # Blankenese
+      - "22525" # Bahrenfeld
+      - "22549" # Blankenese
+      - "22559" # Blankenese
+      - "22607" # Groß Flottbek
+      - "22609" # Othmarschen
+      - "22765" # Altona-Altstadt
+      - "22767" # Altona-Nord
+    contact:
+      address: "Platz der Republik 1, 22765 Hamburg"
+      phone: "040 42811-2345"
+      email: "elterngeld@altona.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  bergedorf:
+    name: "Elterngeldstelle Bergedorf"
+    postal_codes:
+      - "21029" # Bergedorf
+      - "21031" # Bergedorf
+      - "21033" # Bergedorf
+      - "21035" # Bergedorf
+      - "21037" # Bergedorf
+    contact:
+      address: "Wentorfer Straße 38, 21029 Hamburg"
+      phone: "040 42891-2345"
+      email: "elterngeld@bergedorf.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  eimsbuettel:
+    name: "Elterngeldstelle Eimsbüttel"
+    postal_codes:
+      - "20144" # Harvestehude
+      - "20146" # Harvestehude
+      - "20148" # Rotherbaum
+      - "20149" # Harvestehude
+      - "20253" # Hoheluft-West
+      - "20255" # Eimsbüttel
+    contact:
+      address: "Grindelberg 62-66, 20144 Hamburg"
+      phone: "040 42801-2345"
+      email: "elterngeld@eimsbuettel.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  hamburg_mitte:
+    name: "Elterngeldstelle Hamburg-Mitte"
+    postal_codes:
+      - "20095" # Hamburg-Altstadt
+      - "20099" # Hamburg-Altstadt
+      - "20144" # St. Georg
+      - "20146" # Rotherbaum
+      - "20148" # Rotherbaum
+    contact:
+      address: "Caffamacherreihe 1-3, 20355 Hamburg"
+      phone: "040 42854-2345"
+      email: "elterngeld@hamburg-mitte.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  hamburg_nord:
+    name: "Elterngeldstelle Hamburg-Nord"
+    postal_codes:
+      - "22083" # Barmbek-Süd
+      - "22085" # Barmbek-Süd
+      - "22087" # Hohenfelde
+      - "22089" # Eilbek
+      - "22299" # Winterhude
+    contact:
+      address: "Kümmellstraße 7, 22769 Hamburg"
+      phone: "040 42804-2345"
+      email: "elterngeld@hamburg-nord.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  harburg:
+    name: "Elterngeldstelle Harburg"
+    postal_codes:
+      - "21073" # Harburg
+      - "21075" # Harburg
+      - "21077" # Harburg
+      - "21079" # Harburg
+    contact:
+      address: "Harburger Rathausplatz 10, 21073 Hamburg"
+      phone: "040 42871-2345"
+      email: "elterngeld@harburg.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+      
+  wandsbek:
+    name: "Elterngeldstelle Wandsbek"
+    postal_codes:
+      - "22041" # Marienthal
+      - "22043" # Marienthal  
+      - "22045" # Jenfeld
+      - "22047" # Wandsbek
+      - "22049" # Dulsberg
+    contact:
+      address: "Schloßstraße 60, 22041 Hamburg"
+      phone: "040 42881-2345"
+      email: "elterngeld@wandsbek.hamburg.de"
+      office_hours: "Mo-Fr 8:00-16:00"
+
+# Processing Configuration
+processing:
+  average_processing_time: "4 weeks"
+  application_deadline: "within 3 months of birth"
+  retroactive_payment: true
+  maximum_work_hours: 32
+  
+  benefit_calculation:
+    minimum_amount: 300
+    maximum_amount: 1800
+    calculation_rate: 0.65
+    base: "net_income_12_months_before_birth"
+    
+  income_limits:
+    2025_children: 175000
+    2024_children: 200000
+    default: 200000
+    
+validation:
+  required_fields_validation: true
+  data_encryption_check: true
+  income_verification: true
+  plz_office_assignment: true
+  
+submission:
+  methods:
+    - "elterngeld_digital"
+    - "online"
+    - "email"
+    - "postal"
+  processing_time: "up to 4 weeks"
+  timeline_recommendation: "within 3 months of birth" 

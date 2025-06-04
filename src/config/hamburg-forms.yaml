@@ -1,0 +1,498 @@
+# Hamburg Kita Forms Configuration
+# Last Updated: December 16, 2024
+# Source: Official Hamburg.de and Social Services Authority
+
+forms:
+  kita_hauptantrag:
+    name: "Hauptantrag Kita-Gutschein"
+    description: "Main application for Kita voucher (6-12 hours daily care)"
+    filename: "hauptantrag_kita_gutschein.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "kita_application"
+    processing_authority: "Bezirksamt - Abteilung Kindertagesbetreuung"
+    
+    # XL-Gutschein system compatibility
+    xl_gutschein_eligible: true
+    xl_krippen_gutschein: "1-3 years"
+    xl_elementar_gutschein: "3 years - school entry"
+    
+    fields:
+      # Child Information Section
+      child_first_name:
+        coordinates: { x: 120, y: 680 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.vorname"
+        encryption_required: true
+        
+      child_last_name:
+        coordinates: { x: 320, y: 680 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.nachname"
+        encryption_required: true
+        
+      child_birth_date:
+        coordinates: { x: 120, y: 650 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "kita_application.geburtsdatum"
+        encryption_required: true
+        
+      child_birth_place:
+        coordinates: { x: 250, y: 650 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "kita_application.geburtsort"
+        encryption_required: true
+        
+      # Parent Information Section
+      parent1_first_name:
+        coordinates: { x: 120, y: 580 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.first_name"
+        encryption_required: true
+        
+      parent1_last_name:
+        coordinates: { x: 320, y: 580 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.last_name"
+        encryption_required: true
+        
+      parent1_birth_date:
+        coordinates: { x: 120, y: 550 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "kita_application.geburtsdatum"
+        encryption_required: true
+        
+      parent1_nationality:
+        coordinates: { x: 250, y: 550 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "kita_application.staatsangehoerigkeit"
+        encryption_required: false
+        
+      # Address Information
+      street:
+        coordinates: { x: 120, y: 480 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "kita_application.strasse"
+        encryption_required: true
+        
+      house_number:
+        coordinates: { x: 340, y: 480 }
+        width: 60
+        height: 20
+        required: true
+        data_source: "kita_application.hausnummer"
+        encryption_required: true
+        
+      postal_code:
+        coordinates: { x: 120, y: 450 }
+        width: 80
+        height: 20
+        required: true
+        data_source: "kita_application.plz"
+        encryption_required: false
+        validation: "^[0-9]{5}$"
+        
+      city:
+        coordinates: { x: 220, y: 450 }
+        width: 120
+        height: 20
+        required: true
+        data_source: "kita_application.ort"
+        default: "Hamburg"
+        encryption_required: false
+        
+      # Contact Information
+      email:
+        coordinates: { x: 120, y: 380 }
+        width: 250
+        height: 20
+        required: true
+        data_source: "kita_application.email"
+        encryption_required: true
+        validation: "email"
+        
+      phone:
+        coordinates: { x: 120, y: 350 }
+        width: 150
+        height: 20
+        required: true
+        data_source: "kita_application.telefon"
+        encryption_required: true
+        
+      # Care Requirements
+      care_hours:
+        coordinates: { x: 200, y: 280 }
+        width: 40
+        height: 20
+        required: true
+        data_source: "kita_application.betreuungsumfang"
+        options: ["4", "5", "6", "8", "10", "12"]
+        
+      care_reason:
+        coordinates: { x: 150, y: 250 }
+        width: 300
+        height: 20
+        required: true
+        data_source: "kita_application.betreuungsgrund"
+        options: 
+          - "Berufstätigkeit"
+          - "Ausbildung/Studium"
+          - "Arbeitsuche"
+          - "Integration"
+          - "Härtefall"
+          
+      desired_start_date:
+        coordinates: { x: 120, y: 220 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "kita_application.wunsch_startdatum"
+        
+      # Family Information
+      household_children_count:
+        coordinates: { x: 300, y: 190 }
+        width: 40
+        height: 20
+        required: true
+        data_source: "kita_application.anzahl_kinder_im_haushalt"
+        
+      marital_status:
+        coordinates: { x: 150, y: 160 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "kita_application.familienstand"
+        options:
+          - "Ledig"
+          - "Verheiratet"
+          - "Lebenspartnerschaft"
+          - "Geschieden"
+          - "Verwitwet"
+          
+      # Employment Information
+      employment_type:
+        coordinates: { x: 150, y: 130 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "kita_application.beschaeftigung_typ"
+        options:
+          - "Vollzeit"
+          - "Teilzeit"
+          - "Geringfügig"
+          - "Selbstständig"
+          - "Arbeitslos"
+          - "Studium"
+          - "Ausbildung"
+          
+      employer:
+        coordinates: { x: 120, y: 100 }
+        width: 250
+        height: 20
+        required: false
+        data_source: "kita_application.arbeitgeber"
+        encryption_required: true
+        
+      weekly_hours:
+        coordinates: { x: 380, y: 100 }
+        width: 40
+        height: 20
+        required: false
+        data_source: "kita_application.wochenstunden"
+        
+      monthly_income:
+        coordinates: { x: 450, y: 100 }
+        width: 80
+        height: 20
+        required: false
+        data_source: "kita_application.netto_monat_einkommen"
+        encryption_required: true
+        format: "currency"
+        
+      # Special Needs
+      integration_support:
+        coordinates: { x: 50, y: 50 }
+        width: 15
+        height: 15
+        required: false
+        field_type: "checkbox"
+        data_source: "kita_application.integrationshilfe_benoetigt"
+        
+      special_needs_description:
+        coordinates: { x: 120, y: 30 }
+        width: 400
+        height: 40
+        required: false
+        field_type: "textarea"
+        data_source: "kita_application.besondere_beduerfnisse"
+        encryption_required: true
+
+  kita_5_stunden:
+    name: "5-Stunden Kita-Antrag"
+    description: "Application for 5-hour daily Kita care with meals"
+    filename: "antrag_5_stunden_kita.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "kita_application_basic"
+    processing_authority: "Bezirksamt - Abteilung Kindertagesbetreuung"
+    
+    # XL-Gutschein system - automatic for this form
+    xl_gutschein_eligible: true
+    xl_automatic: true
+    xl_krippen_gutschein: "1-3 years"
+    xl_elementar_gutschein: "3 years - school entry"
+    
+    # Simplified field set for basic 5-hour care
+    fields:
+      child_first_name:
+        coordinates: { x: 120, y: 680 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.vorname"
+        encryption_required: true
+        
+      child_last_name:
+        coordinates: { x: 320, y: 680 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.nachname"
+        encryption_required: true
+        
+      child_birth_date:
+        coordinates: { x: 120, y: 650 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "kita_application.geburtsdatum"
+        encryption_required: true
+        
+      parent1_first_name:
+        coordinates: { x: 120, y: 580 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.first_name"
+        encryption_required: true
+        
+      parent1_last_name:
+        coordinates: { x: 320, y: 580 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "kita_application.last_name"
+        encryption_required: true
+        
+      street:
+        coordinates: { x: 120, y: 480 }
+        width: 200
+        height: 20
+        required: true
+        data_source: "kita_application.strasse"
+        encryption_required: true
+        
+      house_number:
+        coordinates: { x: 340, y: 480 }
+        width: 60
+        height: 20
+        required: true
+        data_source: "kita_application.hausnummer"
+        encryption_required: true
+        
+      postal_code:
+        coordinates: { x: 120, y: 450 }
+        width: 80
+        height: 20
+        required: true
+        data_source: "kita_application.plz"
+        encryption_required: false
+        validation: "^[0-9]{5}$"
+        
+      email:
+        coordinates: { x: 120, y: 380 }
+        width: 250
+        height: 20
+        required: true
+        data_source: "kita_application.email"
+        encryption_required: true
+        
+      desired_start_date:
+        coordinates: { x: 120, y: 220 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "kita_application.wunsch_startdatum"
+
+  geschwister_beiblatt:
+    name: "Geschwister-Beiblatt"
+    description: "Sibling supplement for Kita voucher application"
+    filename: "geschwister_beiblatt.pdf"
+    version: "2025.1"
+    effective_date: "2025-01-01"
+    form_type: "supplement"
+    processing_authority: "Bezirksamt - Abteilung Kindertagesbetreuung"
+    
+    fields:
+      sibling_first_name:
+        coordinates: { x: 120, y: 650 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "sibling.vorname"
+        encryption_required: true
+        
+      sibling_last_name:
+        coordinates: { x: 320, y: 650 }
+        width: 180
+        height: 20
+        required: true
+        data_source: "sibling.nachname"
+        encryption_required: true
+        
+      sibling_birth_date:
+        coordinates: { x: 120, y: 620 }
+        width: 100
+        height: 20
+        required: true
+        format: "DD.MM.YYYY"
+        data_source: "sibling.geburtsdatum"
+        encryption_required: true
+
+# Hamburg District Assignment
+districts:
+  altona:
+    name: "Bezirksamt Altona"
+    postal_codes: 
+      - "22041" # Blankenese
+      - "22525" # Bahrenfeld
+      - "22549" # Blankenese
+      - "22559" # Blankenese
+      - "22607" # Groß Flottbek
+      - "22609" # Othmarschen
+      - "22765" # Altona-Altstadt
+      - "22767" # Altona-Nord
+    contact:
+      address: "Platz der Republik 1, 22765 Hamburg"
+      phone: "040 42811-0"
+      email: "kindertagesbetreuung@altona.hamburg.de"
+      
+  bergedorf:
+    name: "Bezirksamt Bergedorf"
+    postal_codes:
+      - "21029" # Bergedorf
+      - "21031" # Bergedorf
+      - "21033" # Bergedorf
+      - "21035" # Bergedorf
+      - "21037" # Bergedorf
+    contact:
+      address: "Wentorfer Straße 38, 21029 Hamburg"
+      phone: "040 42891-0"
+      email: "kindertagesbetreuung@bergedorf.hamburg.de"
+      
+  eimsbuettel:
+    name: "Bezirksamt Eimsbüttel"
+    postal_codes:
+      - "20144" # Harvestehude
+      - "20146" # Harvestehude
+      - "20148" # Rotherbaum
+      - "20149" # Harvestehude
+      - "20253" # Hoheluft-West
+      - "20255" # Eimsbüttel
+    contact:
+      address: "Grindelberg 62-66, 20144 Hamburg"
+      phone: "040 42801-0"
+      email: "kindertagesbetreuung@eimsbuettel.hamburg.de"
+      
+  hamburg_mitte:
+    name: "Bezirksamt Hamburg-Mitte"
+    postal_codes:
+      - "20095" # Hamburg-Altstadt
+      - "20099" # Hamburg-Altstadt
+      - "20144" # St. Georg
+      - "20146" # Rotherbaum
+      - "20148" # Rotherbaum
+    contact:
+      address: "Caffamacherreihe 1-3, 20355 Hamburg"
+      phone: "040 42854-0"
+      email: "kindertagesbetreuung@hamburg-mitte.hamburg.de"
+      
+  hamburg_nord:
+    name: "Bezirksamt Hamburg-Nord"
+    postal_codes:
+      - "22083" # Barmbek-Süd
+      - "22085" # Barmbek-Süd
+      - "22087" # Hohenfelde
+      - "22089" # Eilbek
+      - "22299" # Winterhude
+    contact:
+      address: "Kümmellstraße 7, 22769 Hamburg"
+      phone: "040 42804-0"
+      email: "kindertagesbetreuung@hamburg-nord.hamburg.de"
+      
+  harburg:
+    name: "Bezirksamt Harburg"
+    postal_codes:
+      - "21073" # Harburg
+      - "21075" # Harburg
+      - "21077" # Harburg
+      - "21079" # Harburg
+    contact:
+      address: "Harburger Rathausplatz 10, 21073 Hamburg"
+      phone: "040 42871-0"
+      email: "kindertagesbetreuung@harburg.hamburg.de"
+      
+  wandsbek:
+    name: "Bezirksamt Wandsbek"
+    postal_codes:
+      - "22041" # Marienthal
+      - "22043" # Marienthal  
+      - "22045" # Jenfeld
+      - "22047" # Wandsbek
+      - "22049" # Dulsberg
+    contact:
+      address: "Schloßstraße 60, 22041 Hamburg"
+      phone: "040 42881-0"
+      email: "kindertagesbetreuung@wandsbek.hamburg.de"
+
+# System Configuration
+pdf_processing:
+  default_font: "Arial"
+  default_font_size: 10
+  encoding: "UTF-8"
+  
+validation:
+  required_fields_validation: true
+  data_encryption_check: true
+  plz_district_assignment: true
+  
+submission:
+  methods:
+    - "online"
+    - "email"
+    - "postal"
+  processing_time: "up to 10 weeks"
+  timeline_recommendation: "3-6 months before desired start" 
